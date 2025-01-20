@@ -13,21 +13,23 @@ class Cell():
         self.wall_color = "black"
         self.undo_color = "red"
         self.path_color = "gray"
+        self.bkg_color = "#d9d9d9"
+        self.visited = False
         
         self.walls = {}
-        self.walls["top"] = Line(self.top_left, self.top_right)
-        self.walls["bottom"] = Line(self.bottom_left, self.bottom_right)
+        self.walls["up"] = Line(self.top_left, self.top_right)
+        self.walls["down"] = Line(self.bottom_left, self.bottom_right)
         self.walls["left"] = Line(self.top_left, self.bottom_left)
         self.walls["right"] = Line(self.top_right, self.bottom_right)
         
         self.has_wall = {}
         if has_walls:
-            self.has_wall["top"] = True
-            self.has_wall["bottom"] = True
+            self.has_wall["up"] = True
+            self.has_wall["down"] = True
             self.has_wall["left"] = True
             self.has_wall["right"] = True
         else:
-            self.has_wall["top"] = self.has_wall["bottom"] = self.haswall["left"] = self.has_wall["right"] = False
+            self.has_wall["up"] = self.has_wall["down"] = self.haswall["left"] = self.has_wall["right"] = False
 
         self._win = _win
     @classmethod
@@ -58,8 +60,23 @@ class Cell():
             Point( to_cell.top_left.x + (to_cell.bottom_right.x-to_cell.top_left.x)/2, to_cell.top_left.y + (to_cell.bottom_right.y - to_cell.top_left.y)/2 )
         )
         path.draw(self._win.canvas, color)
+    
+    def set_pos(self, p1: Point, p2: Point):
+        self.top_left = p1
+        self.bottom_right = p2
+        self.top_right = Point(p2.x, p1.y)
+        self.bottom_left = Point(p1.x, p2.y)
          
     def draw(self):
         for wall in self.has_wall:
             if self.has_wall[wall]:
                 self.walls[wall].draw(self._win.canvas, self.wall_color)
+            else:
+                self.walls[wall].draw(self._win.canvas, self.bkg_color)
+
+    def _test(self, color):
+        for wall in self.has_wall:
+            #if self.has_wall[wall]:
+            self.walls[wall].draw(self._win.canvas, color)
+            #else:
+            #    self.walls[wall].draw(self._win.canvas, self.bkg_color)
